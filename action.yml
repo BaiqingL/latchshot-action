@@ -1,0 +1,70 @@
+name: Latchshot Screenshot
+description: Capture a public webpage as PNG or JPEG through the guarded Latchshot API.
+author: Latchshot
+
+branding:
+  icon: camera
+  color: green
+
+inputs:
+  api_key:
+    description: Latchshot trial or paid API key. Pass this from a GitHub Actions secret.
+    required: true
+  url:
+    description: Public HTTP or HTTPS webpage URL to capture.
+    required: true
+  output:
+    description: Output image path, relative to the workflow workspace or absolute.
+    required: false
+    default: latchshot.png
+  width:
+    description: Viewport width from 320 to 2560 pixels.
+    required: false
+    default: "1440"
+  height:
+    description: Viewport height from 240 to 1440 pixels.
+    required: false
+    default: "900"
+  format:
+    description: Image format, png or jpeg.
+    required: false
+    default: png
+  full_page:
+    description: Capture the bounded full page, true or false.
+    required: false
+    default: "false"
+  dark_mode:
+    description: Emulate a dark color scheme, true or false.
+    required: false
+    default: "false"
+
+outputs:
+  path:
+    description: The output path supplied to the action.
+    value: ${{ steps.capture.outputs.path }}
+  render_ms:
+    description: Server-side render time in milliseconds.
+    value: ${{ steps.capture.outputs.render_ms }}
+  quota_remaining:
+    description: Successful renders remaining in the current monthly allowance.
+    value: ${{ steps.capture.outputs.quota_remaining }}
+  navigation:
+    description: Navigation diagnostic, complete or timed-out.
+    value: ${{ steps.capture.outputs.navigation }}
+
+runs:
+  using: composite
+  steps:
+    - id: capture
+      name: Capture public webpage
+      shell: bash
+      env:
+        LATCHSHOT_API_KEY: ${{ inputs.api_key }}
+        LATCHSHOT_URL: ${{ inputs.url }}
+        LATCHSHOT_OUTPUT: ${{ inputs.output }}
+        LATCHSHOT_WIDTH: ${{ inputs.width }}
+        LATCHSHOT_HEIGHT: ${{ inputs.height }}
+        LATCHSHOT_FORMAT: ${{ inputs.format }}
+        LATCHSHOT_FULL_PAGE: ${{ inputs.full_page }}
+        LATCHSHOT_DARK_MODE: ${{ inputs.dark_mode }}
+      run: bash "$GITHUB_ACTION_PATH/scripts/capture.sh"

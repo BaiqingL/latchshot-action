@@ -1,0 +1,40 @@
+name: Capture public webpage
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: Public HTTP or HTTPS URL to capture
+        required: true
+        default: https://example.com
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: screenshot
+        uses: ./
+        with:
+          api_key: ${{ secrets.LATCHSHOT_API_KEY }}
+          url: ${{ inputs.target_url }}
+          output: webpage.png
+
+      - name: Show diagnostics
+        env:
+          RENDER_MS: ${{ steps.screenshot.outputs.render_ms }}
+          QUOTA_REMAINING: ${{ steps.screenshot.outputs.quota_remaining }}
+          NAVIGATION: ${{ steps.screenshot.outputs.navigation }}
+        run: printf 'render_ms=%s quota_remaining=%s navigation=%s\n' "$RENDER_MS" "$QUOTA_REMAINING" "$NAVIGATION"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: webpage-capture
+          path: webpage.png
+          if-no-files-found: error
+          retention-days: 14
