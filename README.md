@@ -6,7 +6,7 @@ Latchshot runs the bounded browser job, blocks private-network targets, returns 
 
 ## Quick start
 
-1. [Create an instant 100-render trial](https://latchshot.fly.dev/#trial).
+1. [Get a Free-plan key with 100 successful renders each UTC calendar month](https://latchshot.fly.dev/#trial).
 2. Add the returned key as a repository secret named `LATCHSHOT_API_KEY`.
 3. Add this step to a workflow:
 
@@ -33,7 +33,7 @@ For the repository-secret setup, artifact outputs, scheduled captures, and the h
 
 | Input | Required | Default | Meaning |
 | --- | --- | --- | --- |
-| `api_key` | yes | — | Trial or paid key; pass from a GitHub Actions secret |
+| `api_key` | yes | — | Free or paid key; pass from a GitHub Actions secret |
 | `url` | yes | — | Public HTTP or HTTPS webpage URL |
 | `output` | no | `latchshot.png` | Output image path |
 | `width` | no | `1440` | Viewport width, 320–2560 |
