@@ -27,6 +27,8 @@ Latchshot runs the bounded browser job, blocks private-network targets, returns 
 
 The repository includes a complete [manually triggered workflow](.github/workflows/capture-page.yml).
 
+For the repository-secret setup, artifact outputs, scheduled captures, and the hosted-versus-runner tradeoff, read the [website screenshot GitHub Action guide](https://latchshot.fly.dev/guides/website-screenshot-github-action.html).
+
 ## Inputs
 
 | Input | Required | Default | Meaning |
