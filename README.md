@@ -58,6 +58,8 @@ Dependency-free clients are included for:
 - [Node.js 18+](examples/node.mjs)
 - [Python 3](examples/python.py)
 
+For screenshot and PDF commands, usage inspection, atomic output writes, and a reusable Node client, use the separate [Latchshot CLI](https://github.com/BaiqingL/latchshot-cli).
+
 ```sh
 export LATCHSHOT_API_KEY='ls_live_replace_me'
 node examples/node.mjs 'https://example.com' example.png
