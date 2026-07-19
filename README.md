@@ -6,7 +6,7 @@ Latchshot runs the bounded browser job, blocks private-network targets, returns 
 
 ## Quick start
 
-1. [Get a Free-plan key with 100 successful renders each UTC calendar month](https://latchshot.fly.dev/#trial).
+1. [Get a Free-plan key with 100 successful renders each UTC calendar month](https://latchshot.fly.dev/?intent=githubaction#trial).
 2. Add the returned key as a repository secret named `LATCHSHOT_API_KEY`.
 3. Add this step to a workflow:
 
