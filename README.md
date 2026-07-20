@@ -29,6 +29,21 @@ The repository includes a complete [manually triggered workflow](.github/workflo
 
 For the repository-secret setup, artifact outputs, scheduled captures, and the hosted-versus-runner tradeoff, read the [website screenshot GitHub Action guide](https://latchshot.fly.dev/guides/website-screenshot-github-action.html).
 
+For a full-page artifact that must reveal lazy-loaded sections, enable both bounded options:
+
+```yaml
+- uses: BaiqingL/latchshot-action@v1
+  id: screenshot
+  with:
+    api_key: ${{ secrets.LATCHSHOT_API_KEY }}
+    url: https://example.com
+    output: full-page.png
+    full_page: true
+    scroll_page: true
+```
+
+`scroll_page` performs one deterministic sweep, then returns to the top before capture. It is capped at 48 steps, 5 seconds, 20,000 CSS pixels high, and 5,000 pixels wide. Use the [`scroll` output](#outputs) to require `complete`; keep Playwright or Browserless for custom scrolling, selectors, clicks, sessions, or other browser interaction. The [lazy-loading guide](https://latchshot.fly.dev/guides/full-page-screenshot-lazy-loading.html) includes production before/after evidence and the complete stop list.
+
 ## Inputs
 
 | Input | Required | Default | Meaning |
@@ -40,6 +55,7 @@ For the repository-secret setup, artifact outputs, scheduled captures, and the h
 | `height` | no | `900` | Viewport height, 240–1440 |
 | `format` | no | `png` | `png` or `jpeg` |
 | `full_page` | no | `false` | Bounded full-page capture |
+| `scroll_page` | no | `false` | Bounded lazy-content sweep; requires `full_page: true` |
 | `dark_mode` | no | `false` | Emulate dark color scheme |
 
 ## Outputs
@@ -50,6 +66,7 @@ For the repository-secret setup, artifact outputs, scheduled captures, and the h
 | `render_ms` | Server-side render duration |
 | `quota_remaining` | Successful renders remaining this month |
 | `navigation` | `complete` or `timed-out` when usable content was still captured |
+| `scroll` | `complete` after a requested sweep; otherwise `off` |
 
 ## Other environments
 
@@ -72,10 +89,12 @@ python3 examples/python.py 'https://example.com' example.png
 - Private, loopback, link-local, and special-use destinations are blocked.
 - No authenticated pages, cookies, sessions, arbitrary scripts, proxy rotation, CAPTCHA solving, or anti-bot bypass.
 - Retry loops are bounded. Treat `400` and `401` as permanent errors.
+- `scroll_page` never accepts scripts, selectors, clicks, custom speed/direction, or multi-step actions; it fails explicitly when its safety bounds are exhausted.
 - This is private-beta software. The published [197/200 supported-page benchmark](https://latchshot.fly.dev/docs.md#beta-evidence-and-boundaries) is engineering evidence, not an SLA.
 
 - Full documentation: <https://latchshot.fly.dev/docs.md>
 - URL-to-screenshot guide: <https://latchshot.fly.dev/guides/url-to-screenshot-api.html>
+- Lazy full-page guide: <https://latchshot.fly.dev/guides/full-page-screenshot-lazy-loading.html>
 - Service health: <https://latchshot.fly.dev/healthz>
 
 ## License

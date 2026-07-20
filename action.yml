@@ -33,6 +33,10 @@ inputs:
     description: Capture the bounded full page, true or false.
     required: false
     default: "false"
+  scroll_page:
+    description: Trigger bounded scrolling before a full-page capture to activate lazy content. Requires full_page true.
+    required: false
+    default: "false"
   dark_mode:
     description: Emulate a dark color scheme, true or false.
     required: false
@@ -51,6 +55,9 @@ outputs:
   navigation:
     description: Navigation diagnostic, complete or timed-out.
     value: ${{ steps.capture.outputs.navigation }}
+  scroll:
+    description: Bounded-scroll diagnostic, complete or off.
+    value: ${{ steps.capture.outputs.scroll }}
 
 runs:
   using: composite
@@ -66,5 +73,6 @@ runs:
         LATCHSHOT_HEIGHT: ${{ inputs.height }}
         LATCHSHOT_FORMAT: ${{ inputs.format }}
         LATCHSHOT_FULL_PAGE: ${{ inputs.full_page }}
+        LATCHSHOT_SCROLL_PAGE: ${{ inputs.scroll_page }}
         LATCHSHOT_DARK_MODE: ${{ inputs.dark_mode }}
       run: bash "$GITHUB_ACTION_PATH/scripts/capture.sh"

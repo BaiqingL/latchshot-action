@@ -8,6 +8,7 @@ width="${LATCHSHOT_WIDTH:-1440}"
 height="${LATCHSHOT_HEIGHT:-900}"
 format="${LATCHSHOT_FORMAT:-png}"
 full_page="${LATCHSHOT_FULL_PAGE:-false}"
+scroll_page="${LATCHSHOT_SCROLL_PAGE:-false}"
 dark_mode="${LATCHSHOT_DARK_MODE:-false}"
 
 if [[ -z "$api_key" ]]; then
@@ -40,6 +41,16 @@ if [[ "$full_page" != "true" && "$full_page" != "false" ]]; then
   exit 2
 fi
 
+if [[ "$scroll_page" != "true" && "$scroll_page" != "false" ]]; then
+  echo "::error::scroll_page must be true or false" >&2
+  exit 2
+fi
+
+if [[ "$scroll_page" == "true" && "$full_page" != "true" ]]; then
+  echo "::error::scroll_page requires full_page to be true" >&2
+  exit 2
+fi
+
 if [[ "$dark_mode" != "true" && "$dark_mode" != "false" ]]; then
   echo "::error::dark_mode must be true or false" >&2
   exit 2
@@ -67,6 +78,7 @@ curl --silent --show-error --fail-with-body \
   --data-urlencode "height=$height" \
   --data-urlencode "format=$format" \
   --data-urlencode "fullPage=$full_page" \
+  --data-urlencode "scrollPage=$scroll_page" \
   --data-urlencode "darkMode=$dark_mode" \
   --output "$output_path"
 
@@ -78,6 +90,7 @@ header_value() {
 render_ms="$(header_value 'x-latchshot-render-ms')"
 quota_remaining="$(header_value 'x-quota-remaining')"
 navigation="$(header_value 'x-latchshot-navigation')"
+scroll="$(header_value 'x-latchshot-scroll')"
 
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
   {
@@ -85,8 +98,9 @@ if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
     echo "render_ms=$render_ms"
     echo "quota_remaining=$quota_remaining"
     echo "navigation=$navigation"
+    echo "scroll=$scroll"
   } >> "$GITHUB_OUTPUT"
 fi
 
-printf 'Captured %s to %s (%s ms, %s quota remaining, navigation %s)\n' \
-  "$target_url" "$output_path" "${render_ms:-unknown}" "${quota_remaining:-unknown}" "${navigation:-unknown}"
+printf 'Captured %s to %s (%s ms, %s quota remaining, navigation %s, scroll %s)\n' \
+  "$target_url" "$output_path" "${render_ms:-unknown}" "${quota_remaining:-unknown}" "${navigation:-unknown}" "${scroll:-unknown}"

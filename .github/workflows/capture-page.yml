@@ -7,6 +7,16 @@ on:
         description: Public HTTP or HTTPS URL to capture
         required: true
         default: https://example.com
+      full_page:
+        description: Capture the bounded full page
+        required: true
+        type: boolean
+        default: false
+      scroll_page:
+        description: Trigger bounded scrolling to activate lazy content; requires full_page
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -24,13 +34,16 @@ jobs:
           api_key: ${{ secrets.LATCHSHOT_API_KEY }}
           url: ${{ inputs.target_url }}
           output: webpage.png
+          full_page: ${{ inputs.full_page }}
+          scroll_page: ${{ inputs.scroll_page }}
 
       - name: Show diagnostics
         env:
           RENDER_MS: ${{ steps.screenshot.outputs.render_ms }}
           QUOTA_REMAINING: ${{ steps.screenshot.outputs.quota_remaining }}
           NAVIGATION: ${{ steps.screenshot.outputs.navigation }}
-        run: printf 'render_ms=%s quota_remaining=%s navigation=%s\n' "$RENDER_MS" "$QUOTA_REMAINING" "$NAVIGATION"
+          SCROLL: ${{ steps.screenshot.outputs.scroll }}
+        run: printf 'render_ms=%s quota_remaining=%s navigation=%s scroll=%s\n' "$RENDER_MS" "$QUOTA_REMAINING" "$NAVIGATION" "$SCROLL"
 
       - uses: actions/upload-artifact@v4
         with:

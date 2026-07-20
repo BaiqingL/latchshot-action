@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+headers_file=""
+output_file=""
+
+for ((index = 1; index <= $#; index += 1)); do
+  argument="${!index}"
+  case "$argument" in
+    --dump-header)
+      next=$((index + 1))
+      headers_file="${!next}"
+      ;;
+    --output)
+      next=$((index + 1))
+      output_file="${!next}"
+      ;;
+  esac
+done
+
+if [[ -z "${LATCHSHOT_TEST_ARGS:-}" || -z "$headers_file" || -z "$output_file" ]]; then
+  echo "fake curl received an incomplete test contract" >&2
+  exit 90
+fi
+
+printf '%s\n' "$@" > "$LATCHSHOT_TEST_ARGS"
+printf '%s\r\n' \
+  'HTTP/2 200' \
+  'content-type: image/png' \
+  'x-latchshot-render-ms: 432' \
+  'x-quota-remaining: 88' \
+  'x-latchshot-navigation: complete' \
+  'x-latchshot-scroll: complete' \
+  > "$headers_file"
+printf 'PNG_TEST_BYTES' > "$output_file"
